@@ -1,10 +1,11 @@
-use server::{establish_connection,  schema::users, models::users::NewUser };
+use rocket::form::Form;
+use server::{establish_connection,  schema::{users, self}, models::users::{NewUser, User, UserRegister} };
 use diesel::RunQueryDsl;
 
 #[macro_use] extern crate rocket;
 
-#[get("/new/user/<name>")]
-fn new_user(name: &str ) -> String {
+#[ post("/register", data = "<login>") ]
+fn new_user(login: Form<UserRegister> ) -> String {
 
     let connection = &mut establish_connection();
 
@@ -24,7 +25,9 @@ fn new_user(name: &str ) -> String {
     return String::from("ok")
 }
 
+
 #[launch]
-fn rocket() -> _ {
+fn rocket() -> _ {    
     rocket::build().mount("/", routes![new_user])
+
 }
