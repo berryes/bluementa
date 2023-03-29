@@ -4,8 +4,8 @@ use diesel::RunQueryDsl;
 
 #[macro_use] extern crate rocket;
 
-#[ post("/register", data = "<login>") ]
-fn new_user(login: Form<UserRegister> ) -> String {
+#[ post("/register",  format = "application/json", data = "<register_data>") ]
+fn new_user(register_data: Json<UserRegister<'_>> ) -> String {
 
     let connection = &mut establish_connection();
 
