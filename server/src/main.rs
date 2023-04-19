@@ -1,33 +1,41 @@
 use rocket::form::Form;
-use server::{establish_connection,  schema::{users, self}, models::users::{NewUser, User, UserRegister} };
+use server::{establish_connection,  schema::{users, self}, models::users::{NewUser, User} };
 use diesel::RunQueryDsl;
-
+use uuid::Uuid;
 #[macro_use] extern crate rocket;
 
-#[ post("/register",  format = "application/json", data = "<register_data>") ]
-fn new_user(register_data: Json<UserRegister<'_>> ) -> String {
+#[derive(FromForm, Debug)]
+struct RegisterUser<> {
+    pub username: String,
+    pub password: String,
+}
+
+#[post("/register", data = "<user>")]
+fn new_user(user: Form<RegisterUser>) { 
 
     let connection = &mut establish_connection();
 
-    let new_post = NewUser { 
-        id: &String::from("asdasdas"),
+
+    let user_data = NewUser { 
+        id: &format!("{}",Uuid::new_v4()),
         premission_level: &1,
-        username: &String::from(name),
-        password: &String::from("asd")
-     };
+        username: &String::from(user.username.clone()),
+        password: &String::from(user.password.clone())
+    };
 
     diesel::insert_into(users::table)
-    .values(new_post)
+    .values(user_data)
     .execute(connection)
     .expect("asd");
+ }
 
-
-    return String::from("ok")
-}
 
 
 #[launch]
 fn rocket() -> _ {    
-    rocket::build().mount("/", routes![new_user])
+    rocket::build().mount("/",
+    routes![
+        new_user
+        ])
 
 }

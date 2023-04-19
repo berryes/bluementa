@@ -1,8 +1,5 @@
 use diesel::prelude::*;
-use rocket::request::{self, Outcome, Request, FromRequest};
-use rocket::data::{self, Data, FromData};
-
-use rocket::serde::{Deserialize, };
+use rocket::form::Form;
 
 #[derive(Queryable)]
 pub struct User {
@@ -25,9 +22,3 @@ pub struct NewUser<'a> {
     pub password: &'a String,
 }
 
-#[derive(Deserialize)]
-#[serde(crate = "rocket::serde")]
-pub struct UserRegister<'r> {
-    pub username: &'r String,
-    pub password: &'r String,
-}
