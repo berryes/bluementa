@@ -6,5 +6,6 @@ diesel::table! {
         premission_level -> Nullable<Tinyint>,
         username -> Nullable<Varchar>,
         password -> Nullable<Varchar>,
+        display_name -> Nullable<Varchar>,
     }
 }
